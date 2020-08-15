@@ -36,9 +36,7 @@ export class CPUMonitor {
       }
       this.bufferNew.copy(this.bufferPrev);
     });
-    this.timeout = setTimeout(() => {
-      this.readProcStatus();
-    }, this.refreshRate);
+    this.timeout = setTimeout(() => this.readProcStatus(), this.refreshRate);
   }
 
   private getCpuStats(loadsNew: number[][], loadsPrev: number[][]): ICPUStats[] {
@@ -86,7 +84,7 @@ export class CPUMonitor {
     socket.on('disconnect', () => {
       io.clients((err, clients) => {
         if (!clients.length || err) {
-          this.isConnected = false;
+          this.stopReading();
         }
       });
     });
@@ -94,7 +92,7 @@ export class CPUMonitor {
 
   connect(io) {
     io.on('connection', (socket) => {
-      this.startReadingStats();
+      this.startReading();
       this.pauseOnNoUsers(io, socket);
     });
 
@@ -103,12 +101,17 @@ export class CPUMonitor {
     });
   }
 
-  private startReadingStats() {
+  private startReading() {
     if (this.isConnected) {
       return;
     }
     this.isConnected = true;
     this.readProcStatus();
+  }
+
+  private stopReading() {
+    this.isConnected = false;
+    clearTimeout(this.timeout);
   }
 
   disconnect() {

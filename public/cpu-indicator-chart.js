@@ -8,7 +8,13 @@ class ChartPainter {
     options: {
       responsive: true,
       scales: {
-        yAxes: [{}],
+        xAxes: [
+          {
+            gridLines: {
+              display: false,
+            },
+          },
+        ],
       },
     },
   };
@@ -54,17 +60,6 @@ class ChartPainter {
   }
 }
 
-var COLORS = [
-  // '#4dc9f6',
-  // '#f67019',
-  // '#537bc4',
-  // '#acc236',
-  // '#166a8f',
-  // '#00a950',
-  // '#58595b',
-  // '#8549ba',
-];
-
 class Socket {
   socket = io();
   chart = new ChartPainter();
@@ -82,16 +77,17 @@ class Socket {
         if (idx === 0) {
           this.chart.addDataset('total cpu', '#f53794', 'rgba(239,199,204,0.3)', true);
         }
-        this.chart.addDataset('cpu ' + d.cpu, COLORS[idx - 1]);
+        this.chart.addDataset('cpu ' + d.cpu);
       });
     }
   }
+
   updateData(data) {
-    const time = Date.now();
+    const label = '';
     const dataset = data.map((d) => {
       return d.usrLoad + d.niLoad + d.syLoad;
     });
-    this.chart.addPoint(time, dataset);
+    this.chart.addPoint(label, dataset);
   }
 }
 
