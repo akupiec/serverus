@@ -1,0 +1,17 @@
+{
+  "name": "serverus",
+  "version": "1.0.0",
+  "main": "index.js",
+  "type": "node",
+  "license": "MIT",
+  "scripts": {
+    "prettier": "prettier --write **/*.{js,ts,html,scss}"
+  },
+  "dependencies": {
+    "express": "^4.17.1",
+    "socket.io": "^2.3.0"
+  },
+  "devDependencies": {
+    "prettier": "^2.0.5"
+  }
+}
