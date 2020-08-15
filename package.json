@@ -2,7 +2,7 @@
   "name": "serverus",
   "version": "1.0.0",
   "main": "index.js",
-  "type": "node",
+  "type": "module",
   "license": "MIT",
   "scripts": {
     "prettier": "prettier --write **/*.{js,ts,html,scss}"
@@ -12,6 +12,8 @@
     "socket.io": "^2.3.0"
   },
   "devDependencies": {
-    "prettier": "^2.0.5"
+    "@types/node": "^14.0.27",
+    "prettier": "^2.0.5",
+    "typescript": "^3.9.7"
   }
 }

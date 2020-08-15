@@ -1,4 +1,4 @@
-import { connectCPU, disconnectCPU, startCPU, stopCPU } from './src/connectCPU.js';
+import { CPUMonitor } from './cpu-monitor/build/CPUMonitor.js';
 import express from 'express';
 import { createServer } from 'http';
 import socket from 'socket.io';
@@ -9,21 +9,10 @@ const io = socket(http);
 
 app.use(express.static('public'));
 
-connectCPU(io);
-
-io.on('connection', (socket) => {
-  startCPU();
-  socket.on('disconnect', () => {
-    io.clients((err, clients) => {
-      if (!clients.length || err) {
-        stopCPU();
-      }
-    });
-  });
-});
+const cpuMonitor = new CPUMonitor().connect(io);
 
 http.on('close', () => {
-  disconnectCPU();
+  cpuMonitor.disconnect();
 });
 
 http.listen(3000, () => {
