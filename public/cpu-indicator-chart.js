@@ -1,3 +1,62 @@
+class PipeChartPainter {
+  cpuEl = document.querySelector('#cpu');
+  #myChart;
+  _data = { datasets: [{ data: [] }] };
+  _options = {
+    height: 50,
+    elements: {
+      arc: {
+        backgroundColor: this._colorize.bind(this, false, false),
+        hoverBackgroundColor: this._hoverColorize.bind(this),
+      },
+    },
+  };
+
+  constructor() {
+    const canvas = document.createElement('canvas');
+    const ctx = canvas.getContext('2d');
+
+    this.#myChart = new Chart(ctx, {
+      type: 'pie',
+      data: this._data,
+      options: this._options,
+    });
+    this.cpuEl.appendChild(canvas);
+  }
+
+  _colorize(opaque, hover, ctx) {
+    const v = ctx.dataset.data[ctx.dataIndex];
+    const opacity = hover ? 1 - Math.abs(v / 150) - 0.2 : 1 - Math.abs(v / 150);
+    return Chart.helpers
+      .color()
+      .hsv(100 - v, 100, 80)
+      .rgbString();
+  }
+
+  _transparentize(color, opacity) {
+    const alpha = opacity === undefined ? 0.5 : 1 - opacity;
+    return Chart.helpers.color(color).alpha(alpha).rgbString();
+  }
+
+  // togglePieDoughnut() {
+  //   if (chart.options.cutoutPercentage) {
+  //     chart.options.cutoutPercentage = 0;
+  //   } else {
+  //     chart.options.cutoutPercentage = 50;
+  //   }
+  //   chart.update();
+  // }
+
+  _hoverColorize(ctx) {
+    return this._colorize(false, true, ctx);
+  }
+
+  addPoint(dataset) {
+    this._data.datasets[0].data = dataset;
+    this.#myChart.update();
+  }
+}
+
 class ChartPainter {
   #config = {
     type: 'line',
@@ -63,6 +122,7 @@ class ChartPainter {
 class Socket {
   socket = io();
   chart = new ChartPainter();
+  pipeChart = new PipeChartPainter();
 
   constructor() {
     this.socket.on('data', (data) => {
@@ -88,6 +148,7 @@ class Socket {
       return d.usrLoad + d.niLoad + d.syLoad;
     });
     this.chart.addPoint(label, dataset);
+    this.pipeChart.addPoint(dataset);
   }
 }
 
