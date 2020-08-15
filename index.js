@@ -9,7 +9,7 @@ const io = socket(http);
 
 app.use(express.static('public'));
 
-const cpuMonitor = new CPUMonitor().connect(io);
+const cpuMonitor = new CPUMonitor(2000).connect(io);
 
 http.on('close', () => {
   cpuMonitor.disconnect();

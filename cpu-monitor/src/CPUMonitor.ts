@@ -3,6 +3,7 @@ import { EventEmitter } from 'events';
 import { ICPUStats } from './iCPUStats';
 
 const BUFFER_SIZE = 1000;
+const REFRESH_RATE = 5000;
 
 export class CPUMonitor {
   private interval;
@@ -12,26 +13,32 @@ export class CPUMonitor {
   private bufferPrev = new Buffer(BUFFER_SIZE);
   private bufferNew = new Buffer(BUFFER_SIZE);
   private event = new EventEmitter();
+  private refreshRate;
 
-  constructor() {
+  constructor(refreshRate = REFRESH_RATE) {
+    this.refreshRate = refreshRate
     fs.open('/proc/stat', 'r', (err, fd) => {
       this.fileHandler = fd;
-      this.interval = setInterval(() => {
-        if (!this.isConnected) {
-          return;
-        }
-        fs.read(fd, this.bufferPrev, 0, BUFFER_SIZE, 0, () => {
-          this.timeout = setTimeout(() => {
-            fs.read(fd, this.bufferNew, 0, BUFFER_SIZE, 0, () => {
-              const loadsPrev = this.bufferToLoads(this.bufferPrev);
-              const loadsNew = this.bufferToLoads(this.bufferNew);
-              const cpuStats = this.getCpuStats(loadsNew, loadsPrev);
-              this.event.emit('event', cpuStats);
-            });
-          }, 3000);
-        });
-      }, 6000);
     });
+  }
+
+  private readProcStatus() {
+    const fd = this.fileHandler;
+    if (!this.isConnected) {
+      return;
+    }
+    fs.read(fd, this.bufferNew, 0, BUFFER_SIZE, 0, () => {
+      if (this.bufferPrev.indexOf(0) !== 0) {
+        const loadsPrev = this.bufferToLoads(this.bufferPrev);
+        const loadsNew = this.bufferToLoads(this.bufferNew);
+        const cpuStats = this.getCpuStats(loadsNew, loadsPrev);
+        this.event.emit('event', cpuStats);
+      }
+      this.bufferNew.copy(this.bufferPrev);
+    });
+    this.timeout = setTimeout(() => {
+      this.readProcStatus();
+    }, this.refreshRate);
   }
 
   private getCpuStats(loadsNew: number[][], loadsPrev: number[][]): ICPUStats[] {
@@ -74,6 +81,7 @@ export class CPUMonitor {
         .map((v) => Number(v));
     });
   }
+
   private pauseOnNoUsers(io: any, socket: any) {
     socket.on('disconnect', () => {
       io.clients((err, clients) => {
@@ -86,13 +94,21 @@ export class CPUMonitor {
 
   connect(io) {
     io.on('connection', (socket) => {
-      this.isConnected = true;
+      this.startReadingStats();
       this.pauseOnNoUsers(io, socket);
     });
 
     this.event.on('event', (data) => {
       io.emit('data', data);
     });
+  }
+
+  private startReadingStats() {
+    if(this.isConnected) {
+      return;
+    }
+    this.isConnected = true;
+    this.readProcStatus();
   }
 
   disconnect() {
