@@ -16,7 +16,7 @@ export class CPUMonitor {
   private refreshRate;
 
   constructor(refreshRate = REFRESH_RATE) {
-    this.refreshRate = refreshRate
+    this.refreshRate = refreshRate;
     fs.open('/proc/stat', 'r', (err, fd) => {
       this.fileHandler = fd;
     });
@@ -104,7 +104,7 @@ export class CPUMonitor {
   }
 
   private startReadingStats() {
-    if(this.isConnected) {
+    if (this.isConnected) {
       return;
     }
     this.isConnected = true;
