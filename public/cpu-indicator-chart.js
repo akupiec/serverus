@@ -139,7 +139,7 @@ class Socket {
     const dataset = data.map((d) => {
       return d.usrLoad + d.niLoad + d.syLoad;
     });
-    const datasetLabels = data.map(d => d.cpu);
+    const datasetLabels = data.map((d) => d.cpu);
     this.chart.addPoint(label, dataset);
     this.pipeChart.addPoint(datasetLabels, dataset);
   }

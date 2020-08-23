@@ -3,6 +3,7 @@ import express from 'express';
 import { createServer } from 'http';
 import socket from 'socket.io';
 import { DiskUsage } from './disk-usage/build/DiskUsage.js';
+import { FILE_SYSTEM } from './config.js';
 
 const app = express();
 const http = createServer(app);
@@ -18,7 +19,7 @@ http.on('close', () => {
 });
 
 app.get('/disk', async (req, res) => {
-  const disksUsage = diskUsage.getDisksUsage();
+  const disksUsage = diskUsage.getDisksUsage([FILE_SYSTEM]);
   Promise.all([disksUsage]).then(
     ([usage]) => {
       res.send({ usage });
