@@ -37,21 +37,13 @@ class PipeChartPainter {
     return Chart.helpers.color(color).alpha(alpha).rgbString();
   }
 
-  // togglePieDoughnut() {
-  //   if (chart.options.cutoutPercentage) {
-  //     chart.options.cutoutPercentage = 0;
-  //   } else {
-  //     chart.options.cutoutPercentage = 50;
-  //   }
-  //   chart.update();
-  // }
-
   _hoverColorize(ctx) {
     return this._colorize(false, true, ctx);
   }
 
-  addPoint(dataset) {
+  addPoint(labels, dataset) {
     this._data.datasets[0].data = dataset;
+    this._data.datasets[0].labels = labels;
     this.#myChart.update();
   }
 }
@@ -147,8 +139,9 @@ class Socket {
     const dataset = data.map((d) => {
       return d.usrLoad + d.niLoad + d.syLoad;
     });
+    const datasetLabels = data.map(d => d.cpu);
     this.chart.addPoint(label, dataset);
-    this.pipeChart.addPoint(dataset);
+    this.pipeChart.addPoint(datasetLabels, dataset);
   }
 }
 
