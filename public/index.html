@@ -9,10 +9,18 @@
         -webkit-user-select: none;
         -ms-user-select: none;
       }
+      .graphs {
+        display: grid;
+        grid-gap: 1em;
+        grid-template-columns: 1fr 1fr;
+      }
     </style>
   </head>
   <body>
-    <div class="cpu" id="cpu"></div>
+    <div class="graphs">
+      <div class="cpu" id="cpu"></div>
+      <div class="cpu" id="cpu2"></div>
+    </div>
 
     <div style="width: 75%;">
       <canvas id="canvas"></canvas>

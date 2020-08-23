@@ -1,9 +1,8 @@
 class PipeChartPainter {
-  cpuEl = document.querySelector('#cpu');
+  cpuEl = document.querySelector('#cpu2');
   #myChart;
   _data = { datasets: [{ data: [] }] };
   _options = {
-    height: 50,
     elements: {
       arc: {
         backgroundColor: this._colorize.bind(this, false, false),
@@ -66,6 +65,7 @@ class ChartPainter {
     },
     options: {
       responsive: true,
+      width: '50%',
       scales: {
         xAxes: [
           {
