@@ -1,20 +1,24 @@
 {
   "name": "serverus",
   "version": "1.0.0",
-  "main": "index.js",
-  "type": "module",
+  "main": "src/index.ts",
+  "type": "node",
   "license": "MIT",
   "scripts": {
+    "build": "tsc --build tsconfig.json",
+    "postbuild": "cp -r package.json yarn.lock public/ build",
     "prettier": "prettier --write **/*.{js,ts,html,scss}",
-    "build": "tsc --build disk-usage/tsconfig.json & tsc --build cpu-monitor/tsconfig.json"
+    "dev": "ts-node src/index.ts"
   },
   "dependencies": {
     "express": "^4.17.1",
     "socket.io": "^2.3.0"
   },
   "devDependencies": {
+    "@types/express": "^4.17.7",
     "@types/node": "^14.0.27",
     "prettier": "^2.0.5",
+    "ts-node": "^9.0.0",
     "typescript": "^3.9.7"
   }
 }

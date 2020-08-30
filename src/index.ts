@@ -1,9 +1,9 @@
-import { CPUMonitor } from './cpu-monitor/build/CPUMonitor.js';
-import express from 'express';
+import * as express from 'express';
 import { createServer } from 'http';
-import socket from 'socket.io';
-import { DiskUsage } from './disk-usage/build/DiskUsage.js';
-import { FILE_SYSTEM } from './config.js';
+import * as socket from 'socket.io';
+import { CPUMonitor } from './cpu-monitor/CPUMonitor';
+import { DiskUsage } from './disk-usage/DiskUsage';
+import { FILE_SYSTEM } from './config';
 
 const app = express();
 const http = createServer(app);
@@ -24,7 +24,10 @@ app.get('/disk', async (req, res) => {
     ([usage]) => {
       res.send({ usage });
     },
-    (err) => res.send(500, err),
+    (err) => {
+      res.status(500);
+      res.send(err);
+    },
   );
 });
 

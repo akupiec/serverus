@@ -99,6 +99,7 @@ export class CPUMonitor {
     this.event.on('event', (data) => {
       io.emit('data', data);
     });
+    return this;
   }
 
   private startReading() {
