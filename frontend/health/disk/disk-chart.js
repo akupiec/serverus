@@ -1,25 +1,6 @@
-function humanFileSize(bytes, si = false, dp = 1) {
-  const thresh = si ? 1000 : 1024;
+import { humanFileSize } from './utils.js';
 
-  if (Math.abs(bytes) < thresh) {
-    return bytes + ' B';
-  }
-
-  const units = si
-    ? ['kB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB']
-    : ['KiB', 'MiB', 'GiB', 'TiB', 'PiB', 'EiB', 'ZiB', 'YiB'];
-  let u = -1;
-  const r = 10 ** dp;
-
-  do {
-    bytes /= thresh;
-    ++u;
-  } while (Math.round(Math.abs(bytes) * r) / r >= thresh && u < units.length - 1);
-
-  return bytes.toFixed(dp) + ' ' + units[u];
-}
-
-class PipeChartPainter {
+export class PipeChartPainter {
   cpuEl = document.querySelector('#diskTotal');
   #myChart;
   _data = {
@@ -45,7 +26,7 @@ class PipeChartPainter {
     const ctx = canvas.getContext('2d');
 
     this.#myChart = new Chart(ctx, {
-      type: 'doughnut',
+      type: 'pie',
       data: this._data,
       options: this._options,
     });
@@ -66,12 +47,3 @@ class PipeChartPainter {
     this.#myChart.update();
   }
 }
-
-const a = new PipeChartPainter();
-fetch('/disk')
-  .then((response) => response.json())
-  .then((data) => {
-    data.usage.forEach((usage) => {
-      a.addDataset(usage.filesystem, usage.used, usage.available);
-    });
-  });

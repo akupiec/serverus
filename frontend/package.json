@@ -1,0 +1,19 @@
+{
+  "name": "serverus-front",
+  "version": "1.0.0",
+  "main": "index.js",
+  "author": "akupiec",
+  "license": "MIT",
+  "private": true,
+  "scripts": {
+    "prebuild": "sass .",
+    "build": "mkdir libs & cp -r node_modules/chart.js node_modules/font-awesome libs"
+  },
+  "devDependencies": {
+    "sass": "^1.26.10"
+  },
+  "dependencies": {
+    "chart.js": "^2.9.3",
+    "font-awesome": "^4.7.0"
+  }
+}

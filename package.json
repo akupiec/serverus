@@ -5,8 +5,11 @@
   "type": "node",
   "license": "MIT",
   "scripts": {
-    "build": "tsc --build tsconfig.json",
-    "postbuild": "cp -r package.json yarn.lock public/ build",
+    "postinstall": "cd frontend && yarn install",
+    "build": "yarn run build:be & yarn run build:fe",
+    "build:be": "tsc --build tsconfig.json",
+    "build:fe": "cd frontend && yarn build",
+    "postbuild": "cp -r package.json yarn.lock frontend/ build",
     "prettier": "prettier --write **/*.{js,ts,html,scss}",
     "dev": "ts-node backend/index.ts"
   },

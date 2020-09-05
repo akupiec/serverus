@@ -2,3 +2,6 @@ node_modules/
 .idea/
 build/
 *.iml
+libs/
+frontend/home.css
+frontend/home.css.map

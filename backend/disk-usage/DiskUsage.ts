@@ -1,13 +1,11 @@
 import { exec } from 'child_process';
 import { inDockerSys } from '../config';
+import { IDiskSpaceUsage } from './iDiskStats';
 
-const REFRESH_RATE = 10000;
 const DF_COMMAND = inDockerSys ? 'df -B 1' : 'df --block-size=1';
 
 export class DiskUsage {
-  constructor(private readonly refreshRate = REFRESH_RATE) {}
-
-  getDisksUsage(filesystems: string[]) {
+  getDisksUsage(filesystems: RegExp): Promise<IDiskSpaceUsage[]> {
     return new Promise((resolve, reject) => {
       exec(DF_COMMAND, (error, stdout, stderr) => {
         if (error || stderr) {
@@ -16,11 +14,21 @@ export class DiskUsage {
         const lines = stdout
           .split('\n')
           .slice(1)
-          .map((line) => line.split(' ').filter((col) => col));
-        const data = lines.map(([filesystem, total, used, available, percentage, path]) => {
-          return { filesystem, total, used, available, percentage, path };
-        });
-        resolve(data);
+          .map((line) => line.split(' ').filter((col) => col))
+          .filter((lines) => lines.length);
+        const diskSpaceUsages = lines
+          .map(([filesystem, total, used, available, percentage, path]) => {
+            return {
+              filesystem,
+              total: Number(total),
+              used: Number(used),
+              available: Number(available),
+              percentage,
+              path,
+            };
+          })
+          .filter((usage) => (filesystems ? usage.filesystem.match(filesystems) : true));
+        resolve(diskSpaceUsages);
       });
     });
   }

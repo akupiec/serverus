@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Serversus Health</title>
+    <link rel="stylesheet" href="cpu-circle.css" />
+    <link rel="icon" type="image/svg+xml" href="../transformer.svg" />
+  </head>
+  <body>
+    <div class="graphs">
+      <div class="cpu" id="cpu"></div>
+      <div id="diskTotal"></div>
+    </div>
+
+    <div style="width: 75%;">
+      <canvas id="canvas"></canvas>
+    </div>
+
+    <script async src="/socket.io/socket.io.js"></script>
+    <script src="../libs/chart.js/dist/Chart.js"></script>
+    <script type="module" src="health.js" defer></script>
+  </body>
+</html>
