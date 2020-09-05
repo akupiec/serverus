@@ -1,14 +1,14 @@
 {
   "name": "serverus",
   "version": "1.0.0",
-  "main": "src/index.ts",
+  "main": "backend/index.ts",
   "type": "node",
   "license": "MIT",
   "scripts": {
     "build": "tsc --build tsconfig.json",
     "postbuild": "cp -r package.json yarn.lock public/ build",
     "prettier": "prettier --write **/*.{js,ts,html,scss}",
-    "dev": "ts-node src/index.ts"
+    "dev": "ts-node backend/index.ts"
   },
   "dependencies": {
     "express": "^4.17.1",
