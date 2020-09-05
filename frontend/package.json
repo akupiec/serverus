@@ -7,7 +7,8 @@
   "private": true,
   "scripts": {
     "prebuild": "sass .",
-    "build": "mkdir libs & cp -r node_modules/chart.js node_modules/font-awesome libs"
+    "build": "mkdir -p libs & mv node_modules/chart.js node_modules/font-awesome libs",
+    "postbuild": "rm -r node_modules && cp -r ../frontend ../build"
   },
   "devDependencies": {
     "sass": "^1.26.10"

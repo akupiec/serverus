@@ -5,10 +5,15 @@ MAINTAINER kupiecart@gmail.com
 WORKDIR /home/server
 COPY . /home/server
 
-RUN yarn install --ignore-optional
-RUN yarn build
-RUN mv build /home/serverus
-RUN rm -r /home/server
+#BE
+RUN yarn install --ignore-optional && yarn build
+
+#FE
+WORKDIR /home/server/frontend
+RUN yarn install && yarn build
+
+RUN mv ../build /home/serverus \
+    && rm -r /home/server
 
 WORKDIR /home/serverus
 RUN yarn install --prod
